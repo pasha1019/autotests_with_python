@@ -1,4 +1,6 @@
 import time
+from os import login_tty
+
 import config.links
 import config.data
 from selenium import webdriver
