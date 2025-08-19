@@ -1,9 +1,10 @@
 import time
+import config.links
 from selenium import webdriver
 
 
 with webdriver.Chrome() as browser:
-    browser.get('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
+    browser.get(config.links.Links.HOST)
     time.sleep(5)
     username_field = browser.find_element('xpath', "//input[@name='username']")
     pass_field = browser.find_element('xpath', "//input[@name='password']")
