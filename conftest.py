@@ -1,4 +1,4 @@
-# file for fixture and options
+# file for fixture with options
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
