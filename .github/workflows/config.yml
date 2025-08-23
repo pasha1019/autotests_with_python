@@ -1,4 +1,4 @@
-ame: UI Tests
+name: UI Tests
 
 on: workflow_dispatch
 
