@@ -48,5 +48,5 @@ jobs:
         with:
           token: ${{ secrets.CI_TOKEN }}
           branch: gh-pages
-          folder: allure-report
+          folder: ./.github/gh-pages
           clean: true
