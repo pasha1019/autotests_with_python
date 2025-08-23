@@ -21,9 +21,10 @@ jobs:
         run: |
           docker compose up --exit-code-from autotests || true                                                                                  
 
-      - name: Copy history from gh-pages to allure-results
+      - name: Create directories structure
         run: |
-          sudo mkdir -p allure-results/history  # Создает директорию для истории Allure
+          sudo mkdir -p allure-results/history
+          sudo mkdir -p ./.github/gh-pages/history
 
       - name: Copy history from gh-pages to allure-results (if exists)
         run: |
@@ -40,7 +41,14 @@ jobs:
 
       - name: Update Allure history
         run: |
-          sudo cp -R allure-report/history/* ./.github/gh-pages/history/
+          # Создаем директорию если она не существует
+          sudo mkdir -p ./.github/gh-pages/history
+          # Копируем только если есть что копировать
+          if [ -d "allure-report/history" ] && [ "$(ls -A allure-report/history)" ]; then
+            sudo cp -R allure-report/history/* ./.github/gh-pages/history/
+          else
+            echo "No new history to copy"
+          fi
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
