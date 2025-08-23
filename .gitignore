@@ -1,0 +1,5 @@
+.idea
+.venv
+.envgit
+report
+allure-results
