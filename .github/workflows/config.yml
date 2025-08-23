@@ -8,65 +8,45 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Checkout gh-pages branch
+      - name: Checkout (copy) gh-pages repository to GitHub runner
         uses: actions/checkout@v4
         with:
           ref: gh-pages
-          path: gh-pages-history
+          path: ./.github/gh-pages
 
       - name: Run UI-tests via docker-compose
         env:
           LOGIN: ${{ secrets.LOGIN }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          docker compose up --exit-code-from autotests || true
+          docker compose up --exit-code-from autotests || true                                                                                  
 
-      - name: Prepare directories
+      - name: Copy history from gh-pages to allure-results
         run: |
-          mkdir -p allure-results/history
-          mkdir -p gh-pages-history/history
+          sudo mkdir -p allure-results/history  # Создает директорию для истории Allure
 
-      - name: Copy existing history to allure-results
+      - name: Copy history from gh-pages to allure-results (if exists)
         run: |
-          if [ -d "gh-pages-history/history" ] && [ "$(ls -A gh-pages-history/history)" ]; then
+          if [ -d "./.github/gh-pages/history" ] && [ "$(ls -A ./.github/gh-pages/history)" ]; then
             echo "Copying existing history..."
-            cp -R gh-pages-history/history/* allure-results/history/
+            sudo cp -R ./.github/gh-pages/history/* allure-results/history/
           else
-            echo "No history found, first run"
+            echo "No history found, skipping copy"
           fi
 
       - name: Generate Allure report
         run: |
           docker compose run autotests /bin/sh -c "allure generate allure-results --clean -o allure-report"
 
-      - name: Copy new history to gh-pages directory
+      - name: Update Allure history
         run: |
-          if [ -d "allure-report/history" ] && [ "$(ls -A allure-report/history)" ]; then
-            echo "Updating history..."
-            cp -R allure-report/history/* gh-pages-history/history/
-          else
-            echo "No new history generated"
-          fi
+          sudo mkdir -p ./.github/gh-pages/history  # Создаем директорию если не существует
+          sudo cp -R allure-report/history/* ./.github/gh-pages/history/
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CI_TOKEN }}
           branch: gh-pages
           folder: allure-report
           clean: true
-
-      - name: Commit and push history updates
-        run: |
-          cd gh-pages-history
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add history/
-          
-          if git diff --staged --quiet; then
-            echo "No changes to history"
-          else
-            git commit -m "Update Allure history [skip ci]"
-            git push
-          fi
