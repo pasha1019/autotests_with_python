@@ -10,7 +10,7 @@ def driver(request):
     # create object options
     options = Options()
     # add options for browser
-    # options.add_argument("--headless") # use headless for browser
+    options.add_argument("--headless") # use headless for browser
     options.add_argument("--no-sandbox") # use no-sandbox
     options.add_argument('--disable-dev-shm-usage') # mast for docker - resolve memory problem
     options.add_argument('--disable-gpu') # disable GPU for tests
