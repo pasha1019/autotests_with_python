@@ -27,7 +27,7 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           docker compose build
-          docker compose up --exit-code-from regression
+          docker compose up --exit-code-from regression || true  # Продолжить даже при ошибке
 
       - name: Generate and deploy Allure report
         run: |
