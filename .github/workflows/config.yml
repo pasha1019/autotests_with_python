@@ -36,7 +36,7 @@ jobs:
           sudo chmod -R 777 allure-results  # Даем полные права
           
           # Генерируем отчет
-          docker compose run --rm regression allure generate allure-results --clean -o allure-report
+          docker compose run --rm autotests allure generate allure-results --clean -o allure-report
           
           # Деплоим на GitHub Pages
           git config --global user.name 'GitHub Actions'
