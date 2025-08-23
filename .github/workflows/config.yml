@@ -43,6 +43,10 @@ jobs:
           sudo mkdir -p ./.github/gh-pages/history  # Создаем директорию если не существует
           sudo cp -R allure-report/history/* ./.github/gh-pages/history/
 
+      - name: Copy Allure report to gh-pages
+        run: |
+          sudo cp -R allure-report/* ./.github/gh-pages/
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
