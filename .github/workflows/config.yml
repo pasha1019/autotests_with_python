@@ -32,7 +32,8 @@ jobs:
       - name: Generate and deploy Allure report
         run: |
           # Создаем директории
-          mkdir -p allure-results/history allure-report
+          sudo mkdir -p allure-results/history allure-report
+          sudo chmod -R 777 allure-results  # Даем полные права
           
           # Генерируем отчет
           docker compose run --rm regression allure generate allure-results --clean -o allure-report
